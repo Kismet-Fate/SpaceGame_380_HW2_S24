@@ -66,7 +66,7 @@ export default class Homework1_Scene extends Scene {
 	private ASTEROID_SPEED: number = 100;
 	private ASTEROID_SPEED_INC: number = 10;
 
-	// HOMEWORK 2 - TODO
+	// --HOMEWORK 2 - TODO
 	/*
 		You'll want to be sure to load in your own sprite here
 	*/
@@ -83,6 +83,7 @@ export default class Homework1_Scene extends Scene {
 		this.load.image("space", "hw2_assets/sprites/space.png");
 
 		/* ##### YOUR CODE GOES BELOW THIS LINE ##### */
+		this.load.spritesheet("fleet", "hw2_assets/spritesheets/Spaceship.json");
 	}
 
 	/*
@@ -230,7 +231,7 @@ export default class Homework1_Scene extends Scene {
 	initializeObjectPools(): void {
 		// Initialize the fleet object pool
 		for(let i = 0; i < this.fleet.length; i++){
-			this.fleet[i] = this.add.animatedSprite(Homework2Names.FLEET_SHIP, "primary");
+			this.fleet[i] = this.add.animatedSprite(Homework2Names.FLEET_SHIP, "primary"); // IMPORTANT
 			this.fleet[i].animation.play(Homework2Animations.SHIP_IDLE);
 			this.fleet[i].scale.set(0.3, 0.3);
 			this.fleet[i].visible = false;
@@ -389,7 +390,7 @@ export default class Homework1_Scene extends Scene {
 		}
 	}
 
-	// HOMEWORK 2 - TODO
+	// --HOMEWORK 2 - TODO
 	/**
 	 * Handles all collisions.
 	 * Collisions only occur between:
@@ -474,13 +475,22 @@ export default class Homework1_Scene extends Scene {
 				// If the asteroid is spawned in and it overlaps the player
 				if(asteroid.visible && Homework1_Scene.checkAABBtoCircleCollision(<AABB>this.player.collisionShape, <Circle>asteroid.collisionShape)){
 					// Put your code here:
+					//console.log("Collision");
+					asteroid.visible = false;
+					this.numAsteroids -= 1;
+					this.asteroidsLabel.text = `Asteroids: ${this.numAsteroids}`;
+					
+					this.emitter.fireEvent(Homework2Event.PLAYER_DAMAGE, {shield: this.playerShield});
+					this.playerShield-=1;
+					this.shieldsLabel.text = `Shield: ${this.playerShield}`;
+					
 
 				}
 			}
 		}
 	}
 
-	// HOMEWORK 2 - TODO
+	// --HOMEWORK 2 - TODO
 	/**
 	 * This function spawns a new asteroid from our object pool.
 	 * 
@@ -523,10 +533,35 @@ export default class Homework1_Scene extends Scene {
 			// Update the UI
 			this.numAsteroids += 1;
 			this.asteroidsLabel.text = `Asteroids: ${this.numAsteroids}`;
+			let colorRNG = Math.floor(Math.random()*6);
+			//console.log(colorRNG);
+			switch (colorRNG){
+				case 0:
+					asteroid.color = Color.RED;
+					break;
+				case 1:
+					asteroid.color = Color.BLUE;
+					break;
+				case 2:
+					asteroid.color = Color.GREEN;
+					break;
+				case 3:
+					asteroid.color = Color.YELLOW;
+					break;
+				case 4:
+					asteroid.color = Color.MAGENTA;
+					break;
+				case 5:
+					asteroid.color = Color.CYAN;
+					break;
+
+			}
+
+			 
 		}
 	}
 
-	// HOMEWORK 2 - TODO
+	// --HOMEWORK 2 - TODO
 	/**
 	 * This function takes in a GameNode that may be out of bounds of the viewport and
 	 * modifies its position so that it wraps around the viewport from one side to the other.
@@ -569,10 +604,32 @@ export default class Homework1_Scene extends Scene {
 	 */
 	handleScreenWrap(node: GameNode, viewportCenter: Vec2, paddedViewportSize: Vec2): void {
 		// Your code goes here:
+		/*
+		if(node instanceof AnimatedSprite){
+			console.log(node.position.vec[0]);
+			console.log(viewportCenter);
+			console.log(paddedViewportSize);
+			
+		}*/
+
+		if(node.position.toArray()[0] > paddedViewportSize.toArray()[0]){
+			node.position.toArray()[0] = 0;
+		}
+		if(node.position.toArray()[0] < 0){
+			node.position.toArray()[0] = paddedViewportSize.toArray()[0];
+		}
+		if(node.position.toArray()[1] > paddedViewportSize.toArray()[1]){
+			node.position.toArray()[1] = 0;
+		}
+		if(node.position.toArray()[1] < 0){
+			node.position.toArray()[1] = paddedViewportSize.toArray()[1];
+		}
+			
+		
 
 	}
 
-	// HOMEWORK 2 - TODO
+	// -HOMEWORK 2 - TODO
 	/**
 	 * This method checks whether or not an AABB collision shape and a Circle collision shape
 	 * overlap with each other.
@@ -599,6 +656,20 @@ export default class Homework1_Scene extends Scene {
 	 */
 	static checkAABBtoCircleCollision(aabb: AABB, circle: Circle): boolean {
 		// Your code goes here:
+		//console.log(aabb.bottomLeft);
+		//console.log(circle);
+        if((aabb.bottomLeft.x-circle.center.x)**2+(aabb.bottomLeft.y-circle.center.y)**2 <= circle.radius**2){
+			return true;
+		}
+		if((aabb.bottomRight.x-circle.center.x)**2+(aabb.bottomRight.y-circle.center.y)**2 <= circle.radius**2){
+			return true;
+		}
+		if((aabb.topLeft.x-circle.center.x)**2+(aabb.topLeft.y-circle.center.y)**2 <= circle.radius**2){
+			return true;
+		}
+		if((aabb.topRight.x-circle.center.x)**2+(aabb.topRight.y-circle.center.y)**2 <= circle.radius**2){
+			return true;
+		}
 		return false;
 	}
 

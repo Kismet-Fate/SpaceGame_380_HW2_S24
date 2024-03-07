@@ -27,7 +27,7 @@ export default class SpaceshipPlayerController implements AI {
 	private receiver: Receiver;
 	private emitter: Emitter;
 
-	// HOMEWORK 2 - TODO
+	// --HOMEWORK 2 - TODO
 	/**
 	 * This method initializes all variables inside of this AI class, and sets
 	 * up anything we need it do.
@@ -49,13 +49,16 @@ export default class SpaceshipPlayerController implements AI {
 
 		this.receiver = new Receiver();
 		this.emitter = new Emitter();
+		this.receiver.subscribe(Homework2Event.PLAYER_DAMAGE);
 	}
 
 	activate(options: Record<string, any>){};
 
 	handleEvent(event: GameEvent): void {
 		// We need to handle animations when we get hurt
+		//console.log(event);
 		if(event.type === Homework2Event.PLAYER_DAMAGE){
+			//
 			if(event.data.get("shield") === 0){
 				// Play animation and queue event to end game
 				this.owner.animation.play("explode", false, Homework2Event.PLAYER_DEAD);

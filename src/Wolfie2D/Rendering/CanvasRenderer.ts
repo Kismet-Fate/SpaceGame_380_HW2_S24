@@ -143,6 +143,7 @@ export default class CanvasRenderer extends RenderingManager {
         let globalAlpha = this.ctx.globalAlpha;
         this.ctx.globalAlpha = node.alpha;
         
+        
         if(node instanceof AnimatedSprite){
             this.renderAnimatedSprite(<AnimatedSprite>node);
         } else if(node instanceof Sprite){

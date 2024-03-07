@@ -12,9 +12,10 @@ export default class GradientCircleShaderType extends RectShaderType {
 	initBufferObject(): void {
 		this.bufferObjectKey = "gradient_circle";
 		this.resourceManager.createBuffer(this.bufferObjectKey);
+
 	}
 
-	// HOMEWORK 2 - TODO
+	// --HOMEWORK 2 - TODO
 	/**
 	 * You should modify this method to allow you to change the color of the GradientCircles
 	 * 
@@ -73,11 +74,14 @@ export default class GradientCircleShaderType extends RectShaderType {
 		const u_Transform = gl.getUniformLocation(program, "u_Transform");
 		gl.uniformMatrix4fv(u_Transform, false, transformation.toArray());
 
+
+		gl.uniform4fv(gl.getUniformLocation(program, "u_color"), options.color.toArray());
+
 		// Draw the quad
 		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 	}
 
-	// HOMEWORK 2 - TODO
+	// --HOMEWORK 2 - TODO
 	/**
 	 * This method decides what options get passed to the above render() method.
 	 * You should modify this class to allow you to change the color of the GradientCircles
@@ -86,7 +90,8 @@ export default class GradientCircleShaderType extends RectShaderType {
 		let options: Record<string, any> = {
 			position: gc.position,
 			size: gc.size,
-			rotation: gc.rotation
+			rotation: gc.rotation,
+			color: gc.color
 		}
 
 		return options;
